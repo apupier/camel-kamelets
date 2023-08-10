@@ -7,14 +7,14 @@ Feature: Data type action
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
 
-  Scenario: Create Kamelet binding
+  Scenario: Create Pipe
     Given variable uuid is "citrus:randomUUID()"
     Given variable input is
     """
     { "id": "${uuid}" }
     """
-    When load KameletBinding data-type-action-binding.yaml
-    Then Camel K integration data-type-action-binding should be running
+    When load Pipe data-type-action-pipe.yaml
+    Then Camel K integration data-type-action-pipe should be running
 
     # Verify output message sent
     Given expect HTTP request body: ${input}
@@ -29,5 +29,5 @@ Feature: Data type action
     Then send HTTP 200 OK
 
   Scenario: Remove resources
-    Given delete KameletBinding data-type-action-binding
+    Given delete Pipe data-type-action-pipe
     And delete Kubernetes service test-service

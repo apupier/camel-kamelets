@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.camel.catalog.DefaultCamelCatalog;
 import org.apache.camel.kamelets.catalog.KameletsCatalog;
 import org.apache.camel.tooling.model.ComponentModel;
-import org.apache.camel.v1alpha1.kameletspec.Template;
+import org.apache.camel.v1.kameletspec.Template;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;

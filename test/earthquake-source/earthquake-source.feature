@@ -24,17 +24,17 @@ Feature: Kamelet earthquake-source
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
 
-  Scenario: Create Kamelet binding
-    Given load KameletBinding earthquake-to-http.yaml
-    Then KameletBinding earthquake-to-http should be available
+  Scenario: Create Pipe
+    Given load Pipe earthquake-to-http.yaml
+    Then Pipe earthquake-to-http should be available
     Then Camel K integration earthquake-to-http should be running
     And Camel K integration earthquake-to-http should print Routes startup
 
-  Scenario: Verify binding
+  Scenario: Verify Pipe
     Given expect HTTP request header: Content-Type="application/json;charset=UTF-8"
     When receive POST /test
     Then send HTTP 200 OK
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding earthquake-to-http
+    Given delete Pipe earthquake-to-http
     And delete Kubernetes service test-service

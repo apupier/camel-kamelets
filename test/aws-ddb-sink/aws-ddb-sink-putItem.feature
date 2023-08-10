@@ -41,12 +41,12 @@ Feature: AWS DDB Sink - PutItem
       | aws.ddb.items | [] |
     Then apply actions verifyItems.groovy
 
-  Scenario: Verify AWS-DDB Kamelet sink binding
-    # Create binding
-    When load KameletBinding aws-ddb-sink-binding.yaml
-    And KameletBinding aws-ddb-sink-binding is available
-    And Camel K integration aws-ddb-sink-binding is running
-    And Camel K integration aws-ddb-sink-binding should print Started aws-ddb-sink-binding
+  Scenario: Verify AWS-DDB Kamelet sink pipe
+    # Create Pipe
+    When load Pipe aws-ddb-sink-pipe.yaml
+    And Pipe aws-ddb-sink-pipe is available
+    And Camel K integration aws-ddb-sink-pipe is running
+    And Camel K integration aws-ddb-sink-pipe should print Started aws-ddb-sink-pipe
     # Verify Kamelet sink
     Given variables
       | maxRetryAttempts  | 20 |
@@ -54,7 +54,7 @@ Feature: AWS DDB Sink - PutItem
     Then apply actions verifyItems.groovy
 
   Scenario: Remove resources
-    # Remove Camel K binding
-    Given delete KameletBinding aws-ddb-sink-binding
+    # Remove Camel K Pipe
+    Given delete Pipe aws-ddb-sink-pipe
     # Stop LocalStack container
     Given stop LocalStack container

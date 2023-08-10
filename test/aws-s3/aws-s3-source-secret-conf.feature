@@ -19,7 +19,7 @@ Feature: AWS S3 Kamelet - secret based config
       | aws-s3-credentials.properties | citrus:encodeBase64(citrus:readFile(aws-s3-credentials.properties)) |
 
   Scenario: Verify AWS-S3 Kamelet to log binding
-    # Create binding
+    # Create Pipe
     Given create labels on Kubernetes secret aws-s3-source-credentials
       | camel.apache.org/kamelet               | aws-s3-source |
       | camel.apache.org/kamelet.configuration | aws-s3-credentials |

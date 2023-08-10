@@ -8,7 +8,7 @@ import (
 	"sort"
 	"strings"
 
-	camel "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camel "github.com/apache/camel-k/pkg/apis/camel/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/runtime/serializer"

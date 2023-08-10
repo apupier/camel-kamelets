@@ -15,7 +15,7 @@ Feature: AWS S3 Kamelet - property based config
     Given load to Camel registry amazonS3Client.groovy
 
   Scenario: Verify AWS-S3 Kamelet to log binding
-    # Create binding
+    # Create Pipe
     Given Camel K integration property file aws-s3-credentials.properties
     Given create Camel K integration aws-s3-to-log-prop-based.groovy
     """

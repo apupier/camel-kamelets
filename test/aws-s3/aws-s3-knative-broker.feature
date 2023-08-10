@@ -22,9 +22,9 @@ Feature: AWS S3 Kamelet - Knative broker binding
     And Knative broker default is running
 
   Scenario: Verify AWS-S3 Kamelet to Knative binding
-    # Create binding
-    When load KameletBinding aws-s3-to-knative-broker.yaml
-    And KameletBinding aws-s3-to-knative-broker is available
+    # Create Pipe
+    When load Pipe aws-s3-to-knative-broker.yaml
+    And Pipe aws-s3-to-knative-broker is available
     And Camel K integration aws-s3-to-knative-broker is running
     Then Camel K integration aws-s3-to-knative-broker should print Started aws-s3-to-knative-broker
     # Verify Kamelet source
@@ -41,7 +41,7 @@ Feature: AWS S3 Kamelet - Knative broker binding
 
   Scenario: Remove resources
     # Remove Camel K resources
-    Given delete KameletBinding aws-s3-to-knative-broker
+    Given delete Pipe aws-s3-to-knative-broker
     Given delete Kubernetes service event-consumer-service
     # Remove Knative resources
     Given delete Knative broker default

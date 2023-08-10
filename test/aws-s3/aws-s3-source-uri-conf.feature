@@ -15,7 +15,7 @@ Feature: AWS S3 Kamelet - URI based config
     Given load to Camel registry amazonS3Client.groovy
 
   Scenario: Verify AWS-S3 Kamelet to log binding
-    # Create binding
+    # Create Pipe
     Given load Camel K integration aws-s3-to-log-uri-based.groovy
     Then Camel K integration aws-s3-to-log-uri-based should be running
     # Verify Kamelet source

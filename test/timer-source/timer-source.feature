@@ -24,19 +24,19 @@ Feature: Timer Source Kamelet
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
 
-  Scenario: Create Kamelet binding
+  Scenario: Create Pipe
     And variables
       | message  | Hello World |
-    Given load KameletBinding timer-to-http.yaml
-    Then KameletBinding timer-to-http should be available
+    Given load Pipe timer-to-http.yaml
+    Then Pipe timer-to-http should be available
     Then Camel K integration timer-to-http should be running
     And Camel K integration timer-to-http should print Routes startup
 
-  Scenario: Verify binding
+  Scenario: Verify Pipe
     Given expect HTTP request body: Hello World
     When receive POST /events
     Then send HTTP 200 OK
 
   Scenario: Remove Camel K resources
-    Given delete KameletBinding timer-to-http
+    Given delete Pipe timer-to-http
     And delete Kubernetes service test-service

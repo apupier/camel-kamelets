@@ -15,21 +15,21 @@
 # limitations under the License.
 # ---------------------------------------------------------------------------
 
-apiVersion: camel.apache.org/v1alpha1
-kind: KameletBinding
+apiVersion: camel.apache.org/v1
+kind: Pipe
 metadata:
   name: timer-to-mail
 spec:
   source:
     ref:
       kind: Kamelet
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       name: timer-source
     properties:
       message: "${message}"
   sink:
     ref:
-      apiVersion: camel.apache.org/v1alpha1
+      apiVersion: camel.apache.org/v1
       kind: Kamelet
       name: mail-sink
     properties:

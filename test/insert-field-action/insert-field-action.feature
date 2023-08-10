@@ -27,14 +27,14 @@ Feature: Insert field Kamelet action
   Scenario: Create Http server
     Given create Kubernetes service test-service with target port 8080
 
-  Scenario: Create Kamelet binding
+  Scenario: Create Pipe
     Given variable input is
     """
     { "id": "citrus:randomUUID()" }
     """
-    When load KameletBinding insert-field-action-binding.yaml
-    Then Camel K integration insert-field-action-binding should be running
-    And Camel K integration insert-field-action-binding should print Routes startup
+    When load Pipe insert-field-action-pipe.yaml
+    Then Camel K integration insert-field-action-pipe should be running
+    And Camel K integration insert-field-action-pipe should print Routes startup
 
   Scenario: Verify output message sent
     Given expect HTTP request body
@@ -46,5 +46,5 @@ Feature: Insert field Kamelet action
     Then send HTTP 200 OK
 
   Scenario: Remove resources
-    Given delete KameletBinding insert-field-action-binding
+    Given delete Pipe insert-field-action-pipe
     And delete Kubernetes service test-service

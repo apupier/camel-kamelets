@@ -10,8 +10,7 @@ import (
 	"sort"
 	"strings"
 
-	camelapiv1 "github.com/apache/camel-k/pkg/apis/camel/v1"
-	camelapi "github.com/apache/camel-k/pkg/apis/camel/v1alpha1"
+	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
 	"github.com/apache/camel-k/pkg/metadata"
 	"github.com/apache/camel-k/pkg/util/camel"
 	"github.com/apache/camel-k/pkg/util/dsl"
@@ -166,7 +165,7 @@ func verifyDescriptors(kamelets []KameletInfo) (errors []error) {
 	return errors
 }
 
-func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
+func hasXDescriptor(p camelapiv1.JSONSchemaProp, desc string) bool {
 	for _, d := range p.XDescriptors {
 		if d == desc {
 			return true
@@ -175,7 +174,7 @@ func hasXDescriptor(p camelapi.JSONSchemaProp, desc string) bool {
 	return false
 }
 
-func hasXDescriptorPrefix(p camelapi.JSONSchemaProp, prefix string) bool {
+func hasXDescriptorPrefix(p camelapiv1.JSONSchemaProp, prefix string) bool {
 	for _, d := range p.XDescriptors {
 		if strings.HasPrefix(d, prefix) {
 			return true
@@ -358,11 +357,11 @@ func verifyFileNames(kamelets []KameletInfo) (errors []error) {
 
 func listKamelets(dir string) []KameletInfo {
 	scheme := runtime.NewScheme()
-	err := camelapi.AddToScheme(scheme)
+	err := camelapiv1.AddToScheme(scheme)
 	handleGeneralError("cannot to add camel APIs to scheme", err)
 
 	codecs := serializer.NewCodecFactory(scheme)
-	gv := camelapi.SchemeGroupVersion
+	gv := camelapiv1.SchemeGroupVersion
 	gvk := schema.GroupVersionKind{
 		Group:   gv.Group,
 		Version: gv.Version,
@@ -388,7 +387,7 @@ func listKamelets(dir string) []KameletInfo {
 		json, err := yaml.ToJSON(content)
 		handleGeneralError(fmt.Sprintf("cannot convert file %q to JSON", fileName), err)
 
-		kamelet := camelapi.Kamelet{}
+		kamelet := camelapiv1.Kamelet{}
 		_, _, err = decoder.Decode(json, &gvk, &kamelet)
 		handleGeneralError(fmt.Sprintf("cannot unmarshal file %q into Kamelet", fileName), err)
 		kameletInfo := KameletInfo{
@@ -420,7 +419,7 @@ func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	return errors
 }
 
-func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
+func getDeclaredParams(k camelapiv1.Kamelet) map[string]bool {
 	res := make(map[string]bool)
 	if k.Spec.Definition != nil {
 		for p := range k.Spec.Definition.Properties {
@@ -448,7 +447,7 @@ func getDeclaredParams(k camelapi.Kamelet) map[string]bool {
 	return res
 }
 
-func getUsedParams(k camelapi.Kamelet) map[string]bool {
+func getUsedParams(k camelapiv1.Kamelet) map[string]bool {
 	if k.Spec.Template != nil {
 		var templateData interface{}
 		if err := json.Unmarshal(k.Spec.Template.RawMessage, &templateData); err != nil {
@@ -492,7 +491,7 @@ func inspectTemplateParams(v interface{}, params map[string]bool) {
 }
 
 type KameletInfo struct {
-	camelapi.Kamelet
+	camelapiv1.Kamelet
 	FileName string
 }
 
