@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/apache/camel-k/v2/pkg/metadata"
+	"github.com/apache/camel-k/v2/pkg/util/camel"
+	"github.com/apache/camel-k/v2/pkg/util/dsl"
 	"io/ioutil"
 	"os"
 	"path"
@@ -11,9 +14,6 @@ import (
 	"strings"
 
 	camelapiv1 "github.com/apache/camel-k/v2/pkg/apis/camel/v1"
-	"github.com/apache/camel-k/pkg/metadata"
-	"github.com/apache/camel-k/pkg/util/camel"
-	"github.com/apache/camel-k/pkg/util/dsl"
 	"github.com/bbalet/stopwords"
 	perrors "github.com/pkg/errors"
 	yamlv3 "gopkg.in/yaml.v3"
@@ -89,14 +89,16 @@ func verifyMissingDependencies(kamelets []KameletInfo) (errors []error) {
 		}
 
 		catalog, _ := camel.DefaultCatalog()
-		meta := metadata.Extract(catalog, code)
+		meta, _ := metadata.Extract(catalog, code)
 
-		meta.Dependencies.Each(func(extractedDep string) bool {
-			if !containsDependency(kamelet, extractedDep) {
-				errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
-			}
-			return true
-		})
+		if meta.Metadata.Dependencies != nil {
+			meta.Metadata.Dependencies.Each(func(extractedDep string) bool {
+				if !containsDependency(kamelet, extractedDep) {
+					errors = append(errors, fmt.Errorf("kamelet %q need dependency %q", kamelet.Name, extractedDep))
+				}
+				return true
+			})
+		}
 	}
 
 	return errors
@@ -231,10 +233,6 @@ func verifyParameters(kamelets []KameletInfo) (errors []error) {
 	for _, kamelet := range kamelets {
 		if kamelet.Spec.Definition == nil {
 			errors = append(errors, fmt.Errorf("kamelet %q does not contain the JSON schema definition", kamelet.Name))
-			continue
-		}
-		if kamelet.Spec.Flow != nil {
-			errors = append(errors, fmt.Errorf("kamelet %q contain the deprecated Flow specification. Must use Template instead.", kamelet.Name))
 			continue
 		}
 		if kamelet.Spec.Template == nil {
@@ -401,19 +399,19 @@ func listKamelets(dir string) []KameletInfo {
 
 func verifyUsedParams(kamelets []KameletInfo) (errors []error) {
 	for _, k := range kamelets {
-	        if (k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml"  && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml"  && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml") {
-		used := getUsedParams(k.Kamelet)
-		declared := getDeclaredParams(k.Kamelet)
-		for p := range used {
-			if _, ok := declared[p]; !ok {
-				errors = append(errors, fmt.Errorf("parameter %q is not declared in the definition of kamelet %q", p, k.Kamelet.Name))
+		if k.FileName != "../../kamelets/azure-storage-blob-source.kamelet.yaml" && k.FileName != "../../kamelets/aws-s3-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/set-kafka-key-action.kamelet.yaml" && k.FileName != "../../kamelets/azure-storage-blob-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/google-storage-cdc-source.kamelet.yaml" && k.FileName != "../../kamelets/elasticsearch-search-source.kamelet.yaml" && k.FileName != "../../kamelets/opensearch-search-source.kamelet.yaml" {
+			used := getUsedParams(k.Kamelet)
+			declared := getDeclaredParams(k.Kamelet)
+			for p := range used {
+				if _, ok := declared[p]; !ok {
+					errors = append(errors, fmt.Errorf("parameter %q is not declared in the definition of kamelet %q", p, k.Kamelet.Name))
+				}
 			}
-		}
-		for p := range declared {
-			if _, ok := used[p]; !ok {
-				errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
+			for p := range declared {
+				if _, ok := used[p]; !ok {
+					errors = append(errors, fmt.Errorf("parameter %q is declared in kamelet %q but never used", p, k.Kamelet.Name))
+				}
 			}
-		}
 		}
 	}
 	return errors
